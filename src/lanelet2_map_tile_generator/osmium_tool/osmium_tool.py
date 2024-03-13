@@ -5,7 +5,7 @@ from lanelet2_map_tile_generator.debug import Debug, DebugMessageType
 
 
 def extract_osm_file(input_osm_file_path: str, input_config_file_path: str, output_dir: str) -> bool:
-    command = f"osmium extract -v -c {input_config_file_path} -s complete_ways -S types=any --overwrite {input_osm_file_path}"
+    command = f"osmium extract -v -c {input_config_file_path} -s smart -S types=any --overwrite {input_osm_file_path}"
     result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     if result.returncode == 0:
