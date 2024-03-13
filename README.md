@@ -12,7 +12,7 @@ Working principal of this tool is sequentally:
 ## System Requirements
 
 - [Python](https://www.python.org/) (tested with 3.10)
-- [Poetry package](https://pypi.org/project/poetry/)
+- [Poetry package](https://python-poetry.org/docs/)
 - [Osmium Tool](https://github.com/osmcode/osmium-tool)
 
 ## Inputs
