@@ -46,19 +46,19 @@ def complete_missing_elements(input_osm_file_path: str, input_extracted_osm_fold
         for relation in divided_relation_list:
             relation_refs = [member for member in relation.iter("member")]
             for r in relation_refs:
-                if r.attrib["ref"] not in [way.attrib["id"] for way in divided_way_list] and r.attrib["ref"] not in [
-                    node.attrib["id"] for node in divided_relation_list]:
-                    # find the way or relation in the whole map and add it to the divided map
-                    if r.attrib["type"] == "way":
+                if r.attrib["type"] == "way":
+                    if r.attrib["ref"] not in [way.attrib["id"] for way in divided_way_list]:
                         for way in way_list:
                             if way.attrib["id"] == r.attrib["ref"]:
                                 divided_map_root.append(way)
-                    elif r.attrib["type"] == "relation":
+                        select_tags(divided_map_root, divided_node_list, divided_way_list, divided_relation_list)
+                elif r.attrib["type"] == "relation":
+                    if r.attrib["ref"] not in [rela.attrib["id"] for rela in divided_relation_list]:
                         for rel in relation_list:
                             if rel.attrib["id"] == r.attrib["ref"]:
                                 divided_map_root.append(rel)
-                    select_tags(divided_map_root, divided_node_list, divided_way_list, divided_relation_list)
-
+                        select_tags(divided_map_root, divided_node_list, divided_way_list, divided_relation_list)
+                        
         # Iterate on divided map's ways and find missing nodes
         for way in divided_way_list:
             nd = [nd.attrib["ref"] for nd in way.iter("nd")]
