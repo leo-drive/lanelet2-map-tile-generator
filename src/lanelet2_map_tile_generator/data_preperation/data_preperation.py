@@ -73,7 +73,11 @@ def generate_lanelet2_layer(mgrs_grid, lanelet2_map_path, lanelet2_whole_mls, la
     feature_lanelet2.Destroy()
 
 
-def generate_yaml_dict(layer_filtered_grids, grid_edge_size) -> dict:
+def generate_yaml_dict(layer_filtered_grids, grid_edge_size, mgrs_grid) -> dict:
+
+    mgrs_object = mgrs.MGRS()
+    zone, northp, origin_y, origin_x = mgrs_object.MGRSToUTM(mgrs_grid)
+
     metadata_yaml = {}
     for filtered_grid in layer_filtered_grids:
         geometry_filtered_grid = filtered_grid.GetGeometryRef()
@@ -82,15 +86,20 @@ def generate_yaml_dict(layer_filtered_grids, grid_edge_size) -> dict:
         for linearring in geometry_filtered_grid:
             point_lat = linearring.GetPoint(0)[1]
             point_lon = linearring.GetPoint(0)[0]
+        y, x, zone_number, zone_letter = utm.from_latlon(point_lat, point_lon)
+
         file_id = str(filtered_grid.GetFID()) + ".osm"
         yaml_data = {
-            "x_resolution": grid_edge_size,
-            "y_resolution": grid_edge_size,
-            file_id: {
-                "id": filtered_grid.GetFID(),
-                "origin_lat": point_lat,
-                "origin_lon": point_lon
-            }
+            "x_resolution": float(grid_edge_size),
+            "y_resolution": float(grid_edge_size),
+            # file_id: {
+            #     # "id": filtered_grid.GetFID(),
+            #     "origin_lat": round(x - origin_x, 2),
+            #     "origin_lon": round(y - origin_y, 2)
+            # }
+
+            # file_id: round(x - origin_x, 2), round(y - origin_y, 2)
+
         }
         metadata_yaml.update(yaml_data)
     return metadata_yaml
@@ -198,7 +207,7 @@ def data_preparation(mgrs_grid, grid_edge_size, lanelet2_map_path, extract_dir) 
     # --------------------------------------------------------------------------------
     Debug.log("Generating metadata.yaml for Dynamic Lanelet2 Map Loading.", DebugMessageType.INFO)
 
-    metadata_yaml = generate_yaml_dict(layer_filtered_grids, grid_edge_size)
+    metadata_yaml = generate_yaml_dict(layer_filtered_grids, grid_edge_size, mgrs_grid)
 
     with open(os.path.join(extract_dir, "lanelet2_map_metadata.yaml"), 'w', ) as f:
         yaml.dump(metadata_yaml, f, sort_keys=False)
