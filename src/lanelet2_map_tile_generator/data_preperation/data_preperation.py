@@ -92,13 +92,7 @@ def generate_yaml_dict(layer_filtered_grids, grid_edge_size, mgrs_grid) -> dict:
         yaml_data = {
             "x_resolution": float(grid_edge_size),
             "y_resolution": float(grid_edge_size),
-            # file_id: {
-            #     # "id": filtered_grid.GetFID(),
-            #     "origin_lat": round(x - origin_x, 2),
-            #     "origin_lon": round(y - origin_y, 2)
-            # }
-
-            # file_id: round(x - origin_x, 2), round(y - origin_y, 2)
+            file_id: [round(x - origin_x, 2), round(y - origin_y, 2)]
 
         }
         metadata_yaml.update(yaml_data)
@@ -210,7 +204,7 @@ def data_preparation(mgrs_grid, grid_edge_size, lanelet2_map_path, extract_dir) 
     metadata_yaml = generate_yaml_dict(layer_filtered_grids, grid_edge_size, mgrs_grid)
 
     with open(os.path.join(extract_dir, "lanelet2_map_metadata.yaml"), 'w', ) as f:
-        yaml.dump(metadata_yaml, f, sort_keys=False)
+        yaml.dump(metadata_yaml, f, default_flow_style=None, sort_keys=False)
 
     # Create config.json for Osmium Extract
     # --------------------------------------------------------------------------------
