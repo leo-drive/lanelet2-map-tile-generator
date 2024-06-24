@@ -76,7 +76,7 @@ def generate_lanelet2_layer(mgrs_grid, lanelet2_map_path, lanelet2_whole_mls, la
 def generate_yaml_dict(layer_filtered_grids, grid_edge_size, mgrs_grid) -> dict:
 
     mgrs_object = mgrs.MGRS()
-    zone, northp, origin_y, origin_x = mgrs_object.MGRSToUTM(mgrs_grid)
+    zone, northp, origin_x, origin_y = mgrs_object.MGRSToUTM(mgrs_grid)
 
     metadata_yaml = {}
     for filtered_grid in layer_filtered_grids:
@@ -86,7 +86,7 @@ def generate_yaml_dict(layer_filtered_grids, grid_edge_size, mgrs_grid) -> dict:
         for linearring in geometry_filtered_grid:
             point_lat = linearring.GetPoint(0)[1]
             point_lon = linearring.GetPoint(0)[0]
-        y, x, zone_number, zone_letter = utm.from_latlon(point_lat, point_lon)
+        x, y, zone_number, zone_letter = utm.from_latlon(point_lat, point_lon)
 
         file_id = str(filtered_grid.GetFID()) + ".osm"
         yaml_data = {
